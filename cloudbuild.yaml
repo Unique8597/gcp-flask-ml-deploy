@@ -1,4 +1,42 @@
 steps:
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ["app", "deploy"]
-timeout: "1600s"
+  # ---- Install Python dependencies ----
+  - name: 'python:3.11'
+    id: Install dependencies
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        pip install -r requirements.txt
+
+  # ---- Lint step ----
+  - name: 'python:3.11'
+    id: Lint code
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        pip install pylint
+        pylint main.py
+
+  # ---- Tests ----
+  - name: 'python:3.11'
+    id: Run tests
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        pip install pytest
+        pytest -q
+
+  # ---- Build App Engine Docker image & deploy ----
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: Deploy to App Engine
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gcloud app deploy --quiet
+
+# Optional: store artifacts 
+images:
+  - "gcr.io/$PROJECT_ID/appengine-image:$SHORT_SHA"
