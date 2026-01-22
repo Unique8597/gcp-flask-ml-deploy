@@ -16,8 +16,3 @@ steps:
       - -c
       - |
         gcloud app deploy --quiet
-
-options:
-  serviceAccount: projects/PROJECT_ID/serviceAccounts/my-build-sa@PROJECT_ID.iam.gserviceaccount.com
-  logging: CLOUD_LOGGING_ONLY
-  logsBucket: gs://my-build-logs-bucket
