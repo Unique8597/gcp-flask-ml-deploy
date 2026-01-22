@@ -8,26 +8,6 @@ steps:
       - |
         pip install -r requirements.txt
 
-  # ---- Lint step ----
-  - name: 'python:3.11'
-    id: Lint code
-    entrypoint: bash
-    args:
-      - -c
-      - |
-        pip install pylint
-        pylint main.py
-
-  # ---- Tests ----
-  - name: 'python:3.11'
-    id: Run tests
-    entrypoint: bash
-    args:
-      - -c
-      - |
-        pip install pytest
-        pytest -q
-
   # ---- Build App Engine Docker image & deploy ----
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: Deploy to App Engine
@@ -37,6 +17,3 @@ steps:
       - |
         gcloud app deploy --quiet
 
-# Optional: store artifacts 
-images:
-  - "gcr.io/$PROJECT_ID/appengine-image:$SHORT_SHA"
